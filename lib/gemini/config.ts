@@ -29,8 +29,18 @@ async function loadUserConfig(userEmail: string): Promise<GeminiConfig> {
   };
 }
 
-function buildClient(config: GeminiConfig): GoogleGenAI {
+async function applyVertexCredentials() {
+  const sa = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (sa && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    const fs = await import("fs");
+    fs.writeFileSync("/tmp/sa.json", sa);
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = "/tmp/sa.json";
+  }
+}
+
+async function buildClient(config: GeminiConfig): Promise<GoogleGenAI> {
   if (config.provider === "vertex") {
+    await applyVertexCredentials();
     if (config.project) {
       return new GoogleGenAI({
         vertexai: true,
@@ -62,7 +72,7 @@ export async function getUserClient(userEmail: string): Promise<{ ai: GoogleGenA
   const cacheKey = configCacheKey(config);
   const cached = userClients.get(userEmail);
   if (cached && cached.cacheKey === cacheKey) return { ai: cached.ai, config: cached.config };
-  const ai = buildClient(config);
+  const ai = await buildClient(config);
   userClients.set(userEmail, { ai, config, cacheKey });
   return { ai, config };
 }
