@@ -299,19 +299,28 @@ export default function SettingsPage() {
                     <SelectContent>
                       <SelectItem value="" disabled className="text-xs text-muted-foreground">— default —</SelectItem>
                       {[
+                        { group: "Gemini 3.1 (Preview)", models: [
+                          { id: "gemini-3.1-pro-preview",         label: "3.1 Pro" },
+                          { id: "gemini-3.1-flash-lite-preview",  label: "3.1 Flash Lite" },
+                          { id: "gemini-3.1-flash-image-preview", label: "3.1 Flash Image" },
+                        ]},
+                        { group: "Gemini 3 (Preview)", models: [
+                          { id: "gemini-3-flash-preview",         label: "3 Flash" },
+                          { id: "gemini-3-pro-image-preview",     label: "3 Pro Image" },
+                        ]},
                         { group: "Gemini 2.5", models: [
-                          { id: "gemini-2.5-pro",       label: "2.5 Pro" },
-                          { id: "gemini-2.5-flash",     label: "2.5 Flash" },
-                          { id: "gemini-2.5-flash-lite",label: "2.5 Flash Lite" },
+                          { id: "gemini-2.5-pro",        label: "2.5 Pro" },
+                          { id: "gemini-2.5-flash",      label: "2.5 Flash" },
+                          { id: "gemini-2.5-flash-lite", label: "2.5 Flash Lite" },
                         ]},
                         { group: "Gemini 2.0", models: [
-                          { id: "gemini-2.0-flash",     label: "2.0 Flash" },
-                          { id: "gemini-2.0-flash-lite",label: "2.0 Flash Lite" },
+                          { id: "gemini-2.0-flash",      label: "2.0 Flash" },
+                          { id: "gemini-2.0-flash-lite", label: "2.0 Flash Lite" },
                         ]},
                         { group: "Gemini 1.5", models: [
-                          { id: "gemini-1.5-pro",       label: "1.5 Pro" },
-                          { id: "gemini-1.5-flash",     label: "1.5 Flash" },
-                          { id: "gemini-1.5-flash-8b",  label: "1.5 Flash 8B" },
+                          { id: "gemini-1.5-pro",        label: "1.5 Pro" },
+                          { id: "gemini-1.5-flash",      label: "1.5 Flash" },
+                          { id: "gemini-1.5-flash-8b",   label: "1.5 Flash 8B" },
                         ]},
                       ].map(({ group, models }) => (
                         <SelectGroup key={group}>
