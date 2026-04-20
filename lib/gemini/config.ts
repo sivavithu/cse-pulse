@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import { getUserSetting } from "@/lib/db/queries";
 import type { GeminiConfig, GeminiProvider } from "./client";
 
-export const MODELS = {
+export const DEFAULT_MODELS = {
   agent: "gemini-2.5-flash",
   chat: "gemini-2.5-flash",
   explain: "gemini-2.5-flash",
@@ -10,7 +10,26 @@ export const MODELS = {
   ping: "gemini-2.0-flash",
 } as const;
 
-export type TaskType = keyof typeof MODELS;
+export type TaskType = keyof typeof DEFAULT_MODELS;
+
+const userModelCache = new Map<string, Record<TaskType, string>>();
+
+export async function getUserModels(userEmail: string): Promise<Record<TaskType, string>> {
+  const [agent, chat, explain, analysis, ping] = await Promise.all([
+    getUserSetting(userEmail, "gemini_model_agent"),
+    getUserSetting(userEmail, "gemini_model_chat"),
+    getUserSetting(userEmail, "gemini_model_explain"),
+    getUserSetting(userEmail, "gemini_model_analysis"),
+    getUserSetting(userEmail, "gemini_model_ping"),
+  ]);
+  return {
+    agent: agent || DEFAULT_MODELS.agent,
+    chat: chat || DEFAULT_MODELS.chat,
+    explain: explain || DEFAULT_MODELS.explain,
+    analysis: analysis || DEFAULT_MODELS.analysis,
+    ping: ping || DEFAULT_MODELS.ping,
+  };
+}
 
 const userClients = new Map<string, { ai: GoogleGenAI; config: GeminiConfig; cacheKey: string }>();
 
@@ -93,5 +112,10 @@ export function invalidateUserClient(userEmail?: string): void {
 }
 
 export function modelFor(task: TaskType): string {
-  return MODELS[task];
+  return DEFAULT_MODELS[task];
+}
+
+export async function modelForUser(userEmail: string, task: TaskType): Promise<string> {
+  const models = await getUserModels(userEmail);
+  return models[task];
 }

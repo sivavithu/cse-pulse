@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentUserEmail } from "@/lib/auth/session";
-import { getUserClient, getUserGeminiConfig, hasGeminiConfig, modelFor } from "@/lib/gemini/config";
+import { getUserClient, getUserGeminiConfig, hasGeminiConfig, modelForUser } from "@/lib/gemini/config";
 
 const EXTRACTION_PROMPT = `You are extracting stock holdings from one or more trading-account screenshots from a Sri Lankan broker (CSE - Colombo Stock Exchange). Multiple images may show different scroll positions of the SAME portfolio - merge them. If the same symbol appears twice, keep ONE row.
 
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Gemini is not configured" }, { status: 400 });
   }
 
-  const model = modelFor("agent");
+  const model = await modelForUser(user, "agent");
 
   try {
     const response = await ai.models.generateContent({

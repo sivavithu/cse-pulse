@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentUserEmail } from "@/lib/auth/session";
-import { getUserClient, getUserGeminiConfig, hasGeminiConfig, modelFor } from "@/lib/gemini/config";
+import { getUserClient, getUserGeminiConfig, hasGeminiConfig, modelForUser } from "@/lib/gemini/config";
 import { portfolioInsightPrompt } from "@/lib/gemini/prompts";
 
 export async function POST(req: NextRequest) {
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Gemini is not configured" }, { status: 400 });
   }
 
-  const model = modelFor("analysis");
+  const model = await modelForUser(user, "analysis");
   const prompt = portfolioInsightPrompt(holdingsText, totalValue, pl, aspi, movers);
 
   try {

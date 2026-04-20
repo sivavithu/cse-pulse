@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { currentUserEmail } from "@/lib/auth/session";
-import { getUserClient, getUserGeminiConfig, hasGeminiConfig, modelFor } from "@/lib/gemini/config";
+import { getUserClient, getUserGeminiConfig, hasGeminiConfig, modelForUser } from "@/lib/gemini/config";
 import { chatSystemPrompt } from "@/lib/gemini/prompts";
 import { formatColomboTime } from "@/lib/market-hours";
 
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Gemini is not configured" }, { status: 400 });
   }
 
-  const model = modelFor("chat");
+  const model = await modelForUser(user, "chat");
   const sysPrompt = chatSystemPrompt(
     portfolioJson ?? "[]",
     marketJson ?? "{}",

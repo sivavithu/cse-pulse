@@ -21,6 +21,11 @@ interface SettingsData {
   gemini_project: string;
   gemini_location: string;
   gemini_service_account_json: string;
+  gemini_model_agent: string;
+  gemini_model_chat: string;
+  gemini_model_explain: string;
+  gemini_model_analysis: string;
+  gemini_model_ping: string;
   scraper_service: string;
   scraper_key: string;
   fallback_enabled: string;
@@ -40,6 +45,11 @@ export default function SettingsPage() {
     gemini_project: "",
     gemini_location: "us-central1",
     gemini_service_account_json: "",
+    gemini_model_agent: "",
+    gemini_model_chat: "",
+    gemini_model_explain: "",
+    gemini_model_analysis: "",
+    gemini_model_ping: "",
     scraper_service: "none",
     scraper_key: "",
     fallback_enabled: "false",
@@ -269,6 +279,29 @@ export default function SettingsPage() {
               </div>
             </div>
           )}
+
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Models per Purpose</Label>
+            <p className="text-xs text-muted-foreground">Leave blank to use the default.</p>
+            <div className="grid grid-cols-2 gap-3">
+              {([
+                { key: "gemini_model_chat", label: "Chat", placeholder: "gemini-2.5-flash" },
+                { key: "gemini_model_explain", label: "Explain", placeholder: "gemini-2.5-flash" },
+                { key: "gemini_model_analysis", label: "Analysis", placeholder: "gemini-2.5-pro" },
+                { key: "gemini_model_agent", label: "Agent / Image", placeholder: "gemini-2.5-flash" },
+                { key: "gemini_model_ping", label: "Ping / Test", placeholder: "gemini-2.0-flash" },
+              ] as const).map(({ key, label, placeholder }) => (
+                <div key={key} className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">{label}</Label>
+                  <Input
+                    placeholder={placeholder}
+                    value={form[key]}
+                    onChange={(e) => set(key, e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
 
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" disabled={testing === "ai"} onClick={testAI}>
