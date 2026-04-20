@@ -13,7 +13,7 @@ async function applyVertexCredentials(serviceAccountJson?: string) {
 }
 
 export async function POST(req: NextRequest) {
-  const { apiKey, provider, project, location, serviceAccountJson } = await req.json();
+  const { apiKey, provider, project, location, serviceAccountJson, model: modelOverride } = await req.json();
   if (!apiKey && provider !== "vertex") return NextResponse.json({ ok: false, error: "API key required" }, { status: 400 });
 
   const config: GeminiConfig = { provider: provider ?? "aistudio", apiKey, project, location: location ?? "us-central1", serviceAccountJson };
@@ -33,8 +33,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const res = await ai.models.generateContent({ model: modelFor("ping"), contents: "Reply with exactly: OK" });
-    return NextResponse.json({ ok: true, model: modelFor("ping"), response: res.text?.trim() });
+    const model = modelOverride || modelFor("ping");
+    const res = await ai.models.generateContent({ model, contents: "Reply with exactly: OK" });
+    return NextResponse.json({ ok: true, model, response: res.text?.trim() });
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) }, { status: 400 });
   }

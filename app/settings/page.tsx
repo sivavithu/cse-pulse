@@ -111,6 +111,7 @@ export default function SettingsPage() {
           project: form.gemini_project,
           location: form.gemini_location,
           serviceAccountJson: form.gemini_service_account_json === "***" ? undefined : form.gemini_service_account_json || undefined,
+          model: form.gemini_model_ping || undefined,
         }),
       });
       const j = await res.json();
