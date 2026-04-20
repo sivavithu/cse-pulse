@@ -19,7 +19,7 @@ export async function requireCurrentUserEmail(): Promise<string> {
 
 export async function requireOnboardedUser(): Promise<string> {
   const email = await requireCurrentUserEmail();
-  if (getUserSetting(email, "onboarding_complete") !== "true") {
+  if (await getUserSetting(email, "onboarding_complete") !== "true") {
     redirect("/onboarding");
   }
   return email;
