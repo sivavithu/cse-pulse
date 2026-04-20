@@ -74,7 +74,12 @@ export async function runAlertCheck(): Promise<{ users: number; checked: number 
       if (!hit || !threshold) continue;
       if (await wasAlertFiredRecently(userEmail, item.symbol, type, threshold, COOLDOWN_SECONDS)) continue;
 
-      await logAlert(userEmail, item.symbol, type, threshold, ltp);
+      try {
+        await logAlert(userEmail, item.symbol, type, threshold, ltp);
+      } catch (err) {
+        console.error(`[Alerts] Failed to log alert for ${item.symbol}:`, err);
+        continue;
+      }
 
       const subject = `${item.symbol} price alert — ${type} LKR ${threshold.toLocaleString()}`;
       const line = `${item.symbol} is now at LKR ${ltp.toLocaleString()}, ${type} your alert of LKR ${threshold.toLocaleString()}.`;

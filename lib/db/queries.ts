@@ -252,7 +252,8 @@ export async function wasAlertFiredRecently(
   const c = await db();
   const r = await c.execute({
     sql: `SELECT id FROM alert_log
-          WHERE user_email = ? AND symbol = ? AND alert_type = ? AND threshold = ?
+          WHERE user_email = ? AND symbol = ? AND alert_type = ?
+            AND ABS(threshold - ?) < 0.001
             AND fired_at > unixepoch() - ?
           LIMIT 1`,
     args: [userEmail, symbol, alertType, threshold, cooldownSeconds],
