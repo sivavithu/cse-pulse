@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, AlertCircle, Loader2, Settings, RotateCcw } from "lucide-react";
@@ -282,22 +282,48 @@ export default function SettingsPage() {
 
           <div className="space-y-2">
             <Label className="text-sm font-medium">Models per Purpose</Label>
-            <p className="text-xs text-muted-foreground">Leave blank to use the default.</p>
+            <p className="text-xs text-muted-foreground">Defaults shown in parentheses. AI Studio and Vertex share these IDs.</p>
             <div className="grid grid-cols-2 gap-3">
               {([
-                { key: "gemini_model_chat", label: "Chat", placeholder: "gemini-2.5-flash" },
-                { key: "gemini_model_explain", label: "Explain", placeholder: "gemini-2.5-flash" },
-                { key: "gemini_model_analysis", label: "Analysis", placeholder: "gemini-2.5-pro" },
-                { key: "gemini_model_agent", label: "Agent / Image", placeholder: "gemini-2.5-flash" },
-                { key: "gemini_model_ping", label: "Ping / Test", placeholder: "gemini-2.0-flash" },
-              ] as const).map(({ key, label, placeholder }) => (
+                { key: "gemini_model_chat",     label: "Chat",         default: "gemini-2.5-flash" },
+                { key: "gemini_model_explain",  label: "Explain",      default: "gemini-2.5-flash" },
+                { key: "gemini_model_analysis", label: "Analysis",     default: "gemini-2.5-pro"   },
+                { key: "gemini_model_agent",    label: "Agent / Image",default: "gemini-2.5-flash" },
+                { key: "gemini_model_ping",     label: "Ping / Test",  default: "gemini-2.0-flash" },
+              ] as const).map(({ key, label, default: def }) => (
                 <div key={key} className="space-y-1">
                   <Label className="text-xs text-muted-foreground">{label}</Label>
-                  <Input
-                    placeholder={placeholder}
-                    value={form[key]}
-                    onChange={(e) => set(key, e.target.value)}
-                  />
+                  <Select value={form[key] || def} onValueChange={(v) => v && set(key, v === def ? "" : v)}>
+                    <SelectTrigger className="text-xs h-8"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="" disabled className="text-xs text-muted-foreground">— default —</SelectItem>
+                      {[
+                        { group: "Gemini 2.5", models: [
+                          { id: "gemini-2.5-pro",       label: "2.5 Pro" },
+                          { id: "gemini-2.5-flash",     label: "2.5 Flash" },
+                          { id: "gemini-2.5-flash-lite",label: "2.5 Flash Lite" },
+                        ]},
+                        { group: "Gemini 2.0", models: [
+                          { id: "gemini-2.0-flash",     label: "2.0 Flash" },
+                          { id: "gemini-2.0-flash-lite",label: "2.0 Flash Lite" },
+                        ]},
+                        { group: "Gemini 1.5", models: [
+                          { id: "gemini-1.5-pro",       label: "1.5 Pro" },
+                          { id: "gemini-1.5-flash",     label: "1.5 Flash" },
+                          { id: "gemini-1.5-flash-8b",  label: "1.5 Flash 8B" },
+                        ]},
+                      ].map(({ group, models }) => (
+                        <SelectGroup key={group}>
+                          <SelectLabel className="text-xs">{group}</SelectLabel>
+                          {models.map(({ id, label: ml }) => (
+                            <SelectItem key={id} value={id} className="text-xs">
+                              {ml} <span className="text-muted-foreground ml-1">{id}</span>
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               ))}
             </div>
