@@ -21,8 +21,12 @@ export async function POST(req: NextRequest) {
   let ai: GoogleGenAI;
   if (config.provider === "vertex") {
     await applyVertexCredentials(config.serviceAccountJson);
-    ai = config.project
-      ? new GoogleGenAI({ vertexai: true, project: config.project, location: config.location ?? "us-central1" } as ConstructorParameters<typeof GoogleGenAI>[0])
+    let resolvedProject = config.project;
+    if (!resolvedProject && config.serviceAccountJson) {
+      try { resolvedProject = JSON.parse(config.serviceAccountJson).project_id; } catch {}
+    }
+    ai = resolvedProject
+      ? new GoogleGenAI({ vertexai: true, project: resolvedProject, location: config.location ?? "us-central1" } as ConstructorParameters<typeof GoogleGenAI>[0])
       : new GoogleGenAI({ vertexai: true, apiKey: config.apiKey } as ConstructorParameters<typeof GoogleGenAI>[0]);
   } else {
     ai = new GoogleGenAI({ apiKey: config.apiKey });

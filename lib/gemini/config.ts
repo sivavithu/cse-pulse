@@ -43,10 +43,14 @@ async function applyVertexCredentials(serviceAccountJson?: string) {
 async function buildClient(config: GeminiConfig): Promise<GoogleGenAI> {
   if (config.provider === "vertex") {
     await applyVertexCredentials(config.serviceAccountJson);
-    if (config.project) {
+    let resolvedProject = config.project;
+    if (!resolvedProject && config.serviceAccountJson) {
+      try { resolvedProject = JSON.parse(config.serviceAccountJson).project_id; } catch {}
+    }
+    if (resolvedProject) {
       return new GoogleGenAI({
         vertexai: true,
-        project: config.project,
+        project: resolvedProject,
         location: config.location ?? "us-central1",
       } as ConstructorParameters<typeof GoogleGenAI>[0]);
     }
