@@ -323,7 +323,7 @@ export default function PortfolioPage() {
               {depositSet ? (
                 <>
                   <p className={`text-lg font-bold mt-0.5 ${hiddenFeeLoss > 0 ? "text-red-500" : "text-muted-foreground"}`}>
-                    -{formatLKR(hiddenFeeLoss)}
+                    {hiddenFeeLoss > 0 ? "-" : ""}{formatLKR(hiddenFeeLoss)}
                   </p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">
                     Deposit − spent − buying power
