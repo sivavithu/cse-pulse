@@ -16,12 +16,11 @@ export async function POST(req: NextRequest) {
   }
 
   const { messages, announcement, companyName, holdings } = await req.json();
-  const config = getUserGeminiConfig(user);
+  const [config, { ai }] = await Promise.all([getUserGeminiConfig(user), getUserClient(user)]);
 
   if (!hasGeminiConfig(config)) {
     return Response.json({ error: "Gemini is not configured" }, { status: 400 });
   }
-  const { ai } = getUserClient(user);
 
   const model = modelFor("explain");
   const sysPrompt = announcementChatSystemPrompt(

@@ -67,11 +67,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No image data" }, { status: 400 });
   }
 
-  const config = getUserGeminiConfig(user);
+  const [config, { ai }] = await Promise.all([getUserGeminiConfig(user), getUserClient(user)]);
   if (!hasGeminiConfig(config)) {
     return NextResponse.json({ error: "Gemini is not configured" }, { status: 400 });
   }
-  const { ai } = getUserClient(user);
 
   const model = modelFor("agent");
 

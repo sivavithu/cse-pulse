@@ -10,12 +10,11 @@ export async function POST(req: NextRequest) {
   }
 
   const { holdingsText, totalValue, pl, aspi, movers } = await req.json();
-  const config = getUserGeminiConfig(user);
+  const [config, { ai }] = await Promise.all([getUserGeminiConfig(user), getUserClient(user)]);
 
   if (!hasGeminiConfig(config)) {
     return NextResponse.json({ error: "Gemini is not configured" }, { status: 400 });
   }
-  const { ai } = getUserClient(user);
 
   const model = modelFor("analysis");
   const prompt = portfolioInsightPrompt(holdingsText, totalValue, pl, aspi, movers);
