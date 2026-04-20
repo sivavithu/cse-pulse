@@ -26,16 +26,16 @@ function NavLinks({ onClose }: { onClose?: () => void }) {
             className={cn(
               "group flex items-center gap-3 rounded-2xl px-3 py-3 transition-all duration-200",
               active
-                ? "bg-card/95 text-foreground shadow-[0_18px_40px_-28px_rgba(15,23,42,0.55)] ring-1 ring-primary/20"
-                : "text-muted-foreground hover:bg-card/55 hover:text-foreground"
+                ? "bg-card/95 dark:bg-card text-foreground shadow-[0_18px_40px_-28px_rgba(15,23,42,0.55)] dark:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] ring-1 ring-primary/25 dark:ring-primary/30"
+                : "text-muted-foreground hover:bg-card/60 dark:hover:bg-card/80 hover:text-foreground"
             )}
           >
             <div
               className={cn(
                 "flex size-10 shrink-0 items-center justify-center rounded-2xl border transition-colors",
                 active
-                  ? "border-primary/25 bg-primary/10 text-primary"
-                  : "border-border/60 bg-background/60 text-muted-foreground group-hover:border-primary/20 group-hover:text-foreground"
+                  ? "border-primary/30 dark:border-primary/40 bg-primary/12 dark:bg-primary/15 text-primary"
+                  : "border-border/60 dark:border-border/80 bg-background/60 dark:bg-white/[0.04] text-muted-foreground group-hover:border-primary/25 dark:group-hover:border-primary/35 group-hover:text-foreground"
               )}
             >
               <Icon className="h-4 w-4" />
@@ -61,7 +61,7 @@ function UserProfile() {
   const { name, email, image } = session.user;
 
   return (
-    <div className="rounded-[24px] border border-border/70 bg-card/85 p-3 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.55)] backdrop-blur-xl">
+    <div className="rounded-[24px] border border-border/70 dark:border-border/80 bg-card/85 dark:bg-card p-3 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.55)] dark:shadow-[0_8px_24px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-xl">
       <div className="mb-3 flex items-center gap-3">
         {image ? (
           <Image
@@ -82,7 +82,7 @@ function UserProfile() {
         </div>
       </div>
 
-      <div className="mb-3 rounded-2xl border border-border/60 bg-background/70 px-3 py-2">
+      <div className="mb-3 rounded-2xl border border-border/60 dark:border-border/75 bg-background/70 dark:bg-white/[0.04] px-3 py-2">
         <p className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">Current Desk</p>
         <p className="mt-1 text-sm font-semibold">{active.label}</p>
       </div>
@@ -102,7 +102,7 @@ function UserProfile() {
 
 export function Sidebar() {
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-border/60 bg-background/55 backdrop-blur-2xl md:flex md:flex-col">
+    <aside className="hidden w-64 shrink-0 border-r border-border/60 dark:border-border/80 bg-background/55 dark:bg-background/80 backdrop-blur-2xl md:flex md:flex-col">
       <div className="border-b border-border/60 px-5 pb-4 pt-5">
         <p className="eyebrow">Colombo Market Desk</p>
         <div className="mt-3 flex items-start gap-3">
