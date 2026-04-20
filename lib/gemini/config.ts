@@ -15,23 +15,25 @@ export type TaskType = keyof typeof MODELS;
 const userClients = new Map<string, { ai: GoogleGenAI; config: GeminiConfig; cacheKey: string }>();
 
 async function loadUserConfig(userEmail: string): Promise<GeminiConfig> {
-  const [provider, apiKey, project, location] = await Promise.all([
+  const [provider, apiKey, project, location, serviceAccountJson] = await Promise.all([
     getUserSetting(userEmail, "gemini_provider"),
     getUserSetting(userEmail, "gemini_api_key"),
     getUserSetting(userEmail, "gemini_project"),
     getUserSetting(userEmail, "gemini_location"),
+    getUserSetting(userEmail, "gemini_service_account_json"),
   ]);
   return {
     provider: (provider ?? "aistudio") as GeminiProvider,
     apiKey: apiKey ?? "",
     project: project ?? undefined,
     location: location ?? "us-central1",
+    serviceAccountJson: serviceAccountJson ?? undefined,
   };
 }
 
-async function applyVertexCredentials() {
-  const sa = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-  if (sa && !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+async function applyVertexCredentials(serviceAccountJson?: string) {
+  const sa = serviceAccountJson ?? process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (sa) {
     const fs = await import("fs");
     fs.writeFileSync("/tmp/sa.json", sa);
     process.env.GOOGLE_APPLICATION_CREDENTIALS = "/tmp/sa.json";
@@ -40,7 +42,7 @@ async function applyVertexCredentials() {
 
 async function buildClient(config: GeminiConfig): Promise<GoogleGenAI> {
   if (config.provider === "vertex") {
-    await applyVertexCredentials();
+    await applyVertexCredentials(config.serviceAccountJson);
     if (config.project) {
       return new GoogleGenAI({
         vertexai: true,

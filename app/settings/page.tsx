@@ -20,6 +20,7 @@ interface SettingsData {
   gemini_api_key: string;
   gemini_project: string;
   gemini_location: string;
+  gemini_service_account_json: string;
   scraper_service: string;
   scraper_key: string;
   fallback_enabled: string;
@@ -38,6 +39,7 @@ export default function SettingsPage() {
     gemini_api_key: "",
     gemini_project: "",
     gemini_location: "us-central1",
+    gemini_service_account_json: "",
     scraper_service: "none",
     scraper_key: "",
     fallback_enabled: "false",
@@ -72,6 +74,7 @@ export default function SettingsPage() {
       // Don't overwrite keys with masked value
       if (payload.gemini_api_key === "***") delete payload.gemini_api_key;
       if (payload.scraper_key === "***") delete payload.scraper_key;
+      if (!payload.gemini_service_account_json) delete payload.gemini_service_account_json;
 
       await fetch("/api/settings", {
         method: "POST",
@@ -97,6 +100,7 @@ export default function SettingsPage() {
           provider: form.gemini_provider,
           project: form.gemini_project,
           location: form.gemini_location,
+          serviceAccountJson: form.gemini_service_account_json === "***" ? undefined : form.gemini_service_account_json || undefined,
         }),
       });
       const j = await res.json();
@@ -220,25 +224,37 @@ export default function SettingsPage() {
           </div>
 
           {form.gemini_provider === "vertex" && (
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label>Project ID</Label>
-                <Input
-                  placeholder="my-project"
-                  value={form.gemini_project}
-                  onChange={(e) => set("gemini_project", e.target.value)}
-                />
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>Project ID</Label>
+                  <Input
+                    placeholder="my-project"
+                    value={form.gemini_project}
+                    onChange={(e) => set("gemini_project", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Region</Label>
+                  <Select value={form.gemini_location} onValueChange={(v) => v && set("gemini_location", v)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {["us-central1", "us-east1", "europe-west1", "asia-southeast1"].map((r) => (
+                        <SelectItem key={r} value={r}>{r}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="space-y-1.5">
-                <Label>Region</Label>
-                <Select value={form.gemini_location} onValueChange={(v) => v && set("gemini_location", v)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["us-central1", "us-east1", "europe-west1", "asia-southeast1"].map((r) => (
-                      <SelectItem key={r} value={r}>{r}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label>Service Account JSON</Label>
+                <textarea
+                  className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-ring"
+                  placeholder={form.gemini_service_account_json === "***" ? "Saved (paste new JSON to replace)" : '{"type":"service_account","project_id":"...",...}'}
+                  value={form.gemini_service_account_json === "***" ? "" : form.gemini_service_account_json}
+                  onChange={(e) => set("gemini_service_account_json", e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">Required on Vercel — not needed locally (uses gcloud ADC).</p>
               </div>
             </div>
           )}

@@ -3,6 +3,7 @@ export const USER_SETTING_KEYS = [
   "gemini_api_key",
   "gemini_project",
   "gemini_location",
+  "gemini_service_account_json",
   "scraper_service",
   "scraper_key",
   "fallback_enabled",
@@ -17,7 +18,7 @@ export const USER_SETTING_KEYS = [
   "theme",
 ] as const;
 
-export const SECRET_SETTING_KEYS = ["gemini_api_key", "scraper_key"] as const;
+export const SECRET_SETTING_KEYS = ["gemini_api_key", "scraper_key", "gemini_service_account_json"] as const;
 
 const USER_SETTING_KEY_SET = new Set<string>(USER_SETTING_KEYS);
 

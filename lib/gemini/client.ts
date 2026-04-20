@@ -8,6 +8,7 @@ export interface GeminiConfig {
   project?: string;
   location?: string;
   model?: string;
+  serviceAccountJson?: string;
 }
 
 export function createGeminiClient(config: GeminiConfig): GoogleGenAI {
