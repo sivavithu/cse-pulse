@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/api/auth"];
+const PUBLIC_PATHS = ["/login", "/api/auth", "/api/alerts/check"];
 
 // Auth.js v5 stores the JWT session token in this cookie (dev = no __Secure- prefix).
 function hasSession(req: NextRequest): boolean {
