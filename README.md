@@ -1,5 +1,7 @@
 # CSE Pulse
 
+> **Fully vibe coded** — every line of this app was built through AI-assisted development. No traditional coding session, just vibes and iteration.
+
 A personal real-time Colombo Stock Exchange (CSE) tracker with AI-powered portfolio management.
 
 > **Disclaimer:** Unofficial app using public CSE data and web scraping. Data may be delayed or inaccurate. **Not financial advice.** Always verify with official [CSE](https://www.cse.lk) sources before making investment decisions.
