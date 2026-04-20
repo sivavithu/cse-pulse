@@ -26,8 +26,8 @@ function NavLinks({ onClose }: { onClose?: () => void }) {
             className={cn(
               "group flex items-center gap-3 rounded-2xl px-3 py-3 transition-all duration-200",
               active
-                ? "bg-card/95 dark:bg-card text-foreground shadow-[0_18px_40px_-28px_rgba(15,23,42,0.55)] dark:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] ring-1 ring-primary/25 dark:ring-primary/30"
-                : "text-muted-foreground hover:bg-card/60 dark:hover:bg-card/80 hover:text-foreground"
+                ? "bg-card/95 dark:bg-card text-foreground shadow-[0_18px_40px_-28px_rgba(15,23,42,0.55)] dark:shadow-[0_4px_16px_-6px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.1)] ring-1 ring-primary/25 dark:ring-primary/35"
+                : "text-muted-foreground hover:bg-card/60 dark:hover:bg-sidebar-accent hover:text-foreground"
             )}
           >
             <div
@@ -102,7 +102,7 @@ function UserProfile() {
 
 export function Sidebar() {
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-border/60 dark:border-border/80 bg-background/55 dark:bg-background/80 backdrop-blur-2xl md:flex md:flex-col">
+    <aside className="hidden w-64 shrink-0 border-r border-border/60 dark:border-border/90 bg-background/55 dark:bg-sidebar backdrop-blur-2xl md:flex md:flex-col">
       <div className="border-b border-border/60 px-5 pb-4 pt-5">
         <p className="eyebrow">Colombo Market Desk</p>
         <div className="mt-3 flex items-start gap-3">

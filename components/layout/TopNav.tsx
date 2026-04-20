@@ -42,7 +42,7 @@ export function TopNav() {
   const ThemeIcon = !mounted ? Laptop : resolvedTheme === "dark" ? Moon : Sun;
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border/60 dark:border-border/80 bg-background/72 dark:bg-background/88 backdrop-blur-2xl">
+    <header className="sticky top-0 z-30 border-b border-border/60 dark:border-border/90 bg-background/72 dark:bg-background/95 backdrop-blur-2xl">
       <div className="flex h-16 items-center gap-3 px-4 md:px-6">
         <Button
           variant="outline"
