@@ -235,7 +235,11 @@ export default function PortfolioPage() {
 
   const allocation = summary ? getAllocation(summary) : [];
   const manualBuyingPower = portfolio?.buyingPower ?? 0;
-  const hiddenFeeLoss = summary ? summary.totalDeposit - (summary.totalCost + manualBuyingPower) : 0;
+  const depositSet = summary ? summary.totalDeposit > 0 : false;
+  // Only calculate fee loss when total deposit is explicitly set; otherwise it's meaningless
+  const hiddenFeeLoss = depositSet && summary
+    ? Math.max(0, summary.totalDeposit - (summary.totalCost + manualBuyingPower))
+    : 0;
   const profitLossWithoutDividend = summary ? summary.totalMarketValue - summary.totalCost - hiddenFeeLoss : 0;
   const profitLossWithDividend = summary ? profitLossWithoutDividend + summary.totalDividend : 0;
   const profitLossWithoutDividendPct =
@@ -316,10 +320,21 @@ export default function PortfolioPage() {
           <Card>
             <CardContent className="pt-4">
               <p className="text-xs text-muted-foreground">Hidden Fee Loss</p>
-              <p className={`text-lg font-bold mt-0.5 ${plColor(-hiddenFeeLoss)}`}>{formatLKR(hiddenFeeLoss)}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
-                Spent + buying power + hidden fee loss = deposit
-              </p>
+              {depositSet ? (
+                <>
+                  <p className={`text-lg font-bold mt-0.5 ${hiddenFeeLoss > 0 ? "text-red-500" : "text-muted-foreground"}`}>
+                    -{formatLKR(hiddenFeeLoss)}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    Deposit − spent − buying power
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-lg font-bold mt-0.5 text-muted-foreground">—</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Set total deposit below to calculate</p>
+                </>
+              )}
             </CardContent>
           </Card>
           <Card>
@@ -330,7 +345,7 @@ export default function PortfolioPage() {
               </p>
               <p className={`text-[10px] mt-0.5 ${plColor(profitLossWithoutDividend)}`}>
                 {formatPct(profitLossWithoutDividendPct)}{" "}
-                <span className="text-muted-foreground">Market value - spent - hidden fee loss</span>
+                <span className="text-muted-foreground">Market value − spent{depositSet && hiddenFeeLoss > 0 ? " − fees" : ""}</span>
               </p>
             </CardContent>
           </Card>
@@ -343,7 +358,7 @@ export default function PortfolioPage() {
               <p className={`text-[10px] mt-0.5 ${plColor(profitLossWithDividend)}`}>
                 {formatPct(profitLossWithDividendPct)}{" "}
                 <span className="text-muted-foreground">
-                  Market value - spent - hidden fee loss + dividend
+                  Market value − spent{depositSet && hiddenFeeLoss > 0 ? " − fees" : ""} + dividend
                 </span>
               </p>
             </CardContent>
